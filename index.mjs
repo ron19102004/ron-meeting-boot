@@ -46,19 +46,17 @@ const getResponseWithRequest = (message) => {
   let index = dataRequestSheet.findIndex((value) =>
     message.toLowerCase().includes(value)
   );
-  return index === -1 ? "" : dataResponseSheet[index];
+  if (index === -1) return "";
+  const data = dataResponseSheet[index].split("$");
+  const random = Math.floor(Math.random() * data.length);
+ return data[random];
 };
 // Create test slash command
 const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
 try {
   await rest.put(Routes.applicationCommands(DISCORD_ID), {
     body: [
-      new SlashCommandBuilder()
-        .setName("test")
-        .setDescription("test")
-        .addStringOption((option) =>
-          option.setName("username").setDescription("Enter username")
-        ),
+      new SlashCommandBuilder().setName("load-response").setDescription("test"),
     ],
   });
 } catch (error) {
@@ -76,8 +74,12 @@ client.on("ready", () => {
 });
 //handle interaction
 client.on("interactionCreate", async (interaction) => {
-  console.log(interaction);
   if (!interaction.isChatInputCommand()) return;
+  if (interaction.commandName === "load-response") {
+    if (interaction.user.username === DISCORD_ADMIN_USERNAME) {
+      await loadDataFromSheets();
+    }
+  }
 });
 
 //handle message
