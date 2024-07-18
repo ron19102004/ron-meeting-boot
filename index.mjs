@@ -60,16 +60,16 @@ const getResponseWithRequest = (message) => {
   return data[random];
 };
 // Create test slash command
-const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
-try {
-  await rest.put(Routes.applicationCommands(DISCORD_ID), {
-    body: [
-      new SlashCommandBuilder().setName("load-response").setDescription("test"),
-    ],
-  });
-} catch (error) {
-  console.error(error);
-}
+// const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
+// try {
+//   await rest.put(Routes.applicationCommands(DISCORD_ID), {
+//     body: [
+//       new SlashCommandBuilder().setName("load-response").setDescription("test"),
+//     ],
+//   });
+// } catch (error) {
+//   console.error(error);
+// }
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -81,13 +81,13 @@ client.on("ready", () => {
   console.log(`Logged in as ${client.user.id}!`);
 });
 //handle interaction
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-  if (interaction.commandName === "load-response") {
-    await loadDataFromSheets();
-    await interaction.reply("Loaded chat response");
-  }
-});
+// client.on("interactionCreate", async (interaction) => {
+//   if (!interaction.isChatInputCommand()) return;
+//   if (interaction.commandName === "load-response") {
+//     await loadDataFromSheets();
+//     await interaction.reply("Loaded chat response");
+//   }
+// });
 
 //handle message
 const isAdmin = (username) => {
@@ -123,6 +123,11 @@ client.on("messageCreate", async (message) => {
           await message.reply("Unbanned user!");
         }
       }
+      break;
+    }
+    case "$load": {
+      await loadDataFromSheets();
+      await message.reply("Loaded chat response");
       break;
     }
     default: {
