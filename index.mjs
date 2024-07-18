@@ -55,9 +55,13 @@ const getResponseWithRequest = (message) => {
     message.toLowerCase().includes(value)
   );
   if (index === -1) return "";
-  const data = dataResponseSheet[index].split("$");
-  const random = Math.floor(Math.random() * data.length);
-  return data[random];
+  try {
+    const data = dataResponseSheet[index].split("$");
+    const random = Math.floor(Math.random() * data.length);
+    return data[random];
+  } catch (e) {
+    return "";
+  }
 };
 // Create test slash command
 // const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
